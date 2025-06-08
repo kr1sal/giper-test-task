@@ -2,7 +2,7 @@
 
 import {Task, TaskState} from "@/app/todo/task";
 import React from "react";
-import safeParse from "@/utilities/safe-parse";
+import safeParse from "@/utils/safe-parse";
 
 interface TaskData {
   id: number;
