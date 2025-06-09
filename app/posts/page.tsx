@@ -1,16 +1,18 @@
 "use client";
 
-import React from "react";
+import {useState, useEffect} from "react";
+import {KeyboardEvent} from "react";
 import fetchPosts from "@/utils/fetch-posts";
 import type PostData from "@/types/post";
 import {FcFilledFilter} from "react-icons/fc";
 import GoBack from "@/app/go-back";
+import Post from "@/app/posts/post";
 
 export default function PostsPage() {
-  const [posts, setPosts] = React.useState<PostData[]>([])
-  const [titleFilter, setTitleFilter] = React.useState<RegExp>(new RegExp(''))
+  const [posts, setPosts] = useState<PostData[]>([])
+  const [titleFilter, setTitleFilter] = useState<RegExp>(new RegExp(''))
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchPosts().then(setPosts);
   }, [])
 
@@ -19,6 +21,10 @@ export default function PostsPage() {
     if (element && element instanceof HTMLInputElement) {
       setTitleFilter(new RegExp(element.value, "i"));
     }
+  }
+
+  const onEnter = (e: KeyboardEvent) => {
+    if (e.key === "Enter") onFilter();
   }
 
   return (
@@ -31,9 +37,7 @@ export default function PostsPage() {
             <FcFilledFilter className="size-7"/>
           </button>
           <input id="title-filter-input" type="text" placeholder="Search by Title" className="input rounded-r-full bg-transparent"
-                 onKeyUp={(e) => {
-                   if (e.key === "Enter") onFilter();
-                 }} />
+                 onKeyUp={onEnter} />
         </div>
       </nav>
       <div className="overflow-x-auto rounded-box border-base-content/5 w-full bg-base-100">
@@ -48,19 +52,14 @@ export default function PostsPage() {
           </tr>
           </thead>
           <tbody>
-          {posts
-            .filter(({title}) => titleFilter.test(title))
-            .map((post) => {
-              return (
-                <tr key={post.id}>
-                  <th>{post.id}</th>
-                  <td>{post.userId}</td>
-                  <td>{post.title}</td>
-                  <td>{post.body}</td>
-                </tr>
-              );
-            })
-          }
+            {posts
+              .filter(({title}) => titleFilter.test(title))
+              .map((post) => {
+                return (
+                  <Post key={post.id} id={post.id} userId={post.userId} title={post.title} body={post.body}></Post>
+                );
+              })
+            }
           </tbody>
         </table>
       </div>
