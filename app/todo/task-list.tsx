@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useEffect} from "react";
+import {useState, useEffect, KeyboardEvent} from "react";
 import {ChangeEvent} from "react";
 import {Task, TaskState} from "@/app/todo/task";
 import safeParse from "@/utils/safe-parse";
@@ -49,6 +49,10 @@ export default function TaskList() {
     setTasks([...tasks, {id: getFreeId(tasks), name: input, state: TaskState.Running}]);
   }
 
+  const onEnter = (e: KeyboardEvent) => {
+    if (e.key === "Enter") addTask();
+  }
+
   const deleteTask = (id: number) => {
     setTasks(tasks.filter((task) => task.id !== id));
   }
@@ -71,7 +75,8 @@ export default function TaskList() {
         <legend className="fieldset-legend">Add Task</legend>
         <div className="join">
           <input type="text" className="input join-item" value={input} placeholder="Your task name"
-                 onChange={updateInput} />
+                 onChange={updateInput}
+                 onKeyDown={onEnter} />
           <button className="btn join-item"
                   onClick={addTask}>
             Add
