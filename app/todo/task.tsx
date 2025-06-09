@@ -10,11 +10,17 @@ export enum TaskState {
 
 interface TaskProps {
   name: string;
+  initialState: TaskState;
   onDeleteAction: () => void;
+  onChangeStateAction: (state: TaskState) => void;
 }
 
-export function Task({ name, onDeleteAction}: TaskProps) {
-  const [state, setState] = React.useState<TaskState>(TaskState.Running);
+export function Task({ name, initialState, onDeleteAction, onChangeStateAction}: TaskProps) {
+  const [state, setState] = React.useState<TaskState>(initialState);
+  
+  React.useEffect(() => {
+    onChangeStateAction(state);
+  }, [state]);
 
   return (
     <li className={state === TaskState.Running ? "list-row w-xs" : "list-row w-xs bg-green-600 transition-colors rounded-none"}>

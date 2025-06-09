@@ -74,9 +74,22 @@ export default function TaskList() {
       <ul className="list bg-base-100 rounded-box shadow-md overflow-hidden">
         {tasks.map((task: TaskData) => {
           return (
-            <Task key={task.id} name={task.name} onDeleteAction={() => {
-              setTasks(tasks.filter(({id}) => id !== task.id));
-            }}></Task>
+            <Task key={task.id} name={task.name}
+                  initialState={task.state}
+                  onDeleteAction={() => {
+                    setTasks(tasks.filter(({id}) => id !== task.id));
+                  }}
+                  onChangeStateAction={(state) => {
+                    setTasks(tasks.map((taskData) => {
+                      if (taskData.id === task.id) {
+                        const newTaskData = {...taskData}
+                        newTaskData.state = state;
+                        return newTaskData;
+                      }
+                      return taskData;
+                    }));
+                  }}
+            ></Task>
           );
         })}
       </ul>
